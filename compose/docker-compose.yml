@@ -1,0 +1,51 @@
+hello-docker-compose-service1:
+  build: ./service1
+  ports:
+    - "4567:4567"
+  volumes:
+    - ./service1/target:/data
+  links:
+    - postgres1:db
+  environment:
+    - DB_USERNAME=stephan
+    - DB_PASSWORD=mysecretpassword1
+    - DB_RETRIES=6
+    - DB_PAUSE_BETWEEN_RETRIES=5000
+hello-docker-compose-service2:
+  build: ./service2
+  ports:
+    - "4568:4567"
+  volumes:
+    - ./service2/target:/data
+  links:
+    - postgres1:db
+  environment:
+    - DB_USERNAME=stephan
+    - DB_PASSWORD=mysecretpassword1
+    - DB_RETRIES=6
+    - DB_PAUSE_BETWEEN_RETRIES=5000
+hello-docker-compose-service3:
+  build: ./service3
+  ports:
+    - "4569:4567"
+  volumes:
+    - ./service3/target:/data
+  links:
+    - postgres2
+    - hello-docker-compose-service1:service1
+    - hello-docker-compose-service2:service2
+  environment:
+    - POSTGRES2_USERNAME=stephan
+    - POSTGRES2_PASSWORD=mysecretpassword2
+    - POSTGRES2_RETRIES=6
+    - POSTGRES2_PAUSE_BETWEEN_RETRIES=5000
+postgres1:
+  image: postgres:9
+  environment:
+    - POSTGRES_USER=stephan
+    - POSTGRES_PASSWORD=mysecretpassword1
+postgres2:
+  image: postgres:9
+  environment:
+    - POSTGRES_USER=stephan
+    - POSTGRES_PASSWORD=mysecretpassword2
