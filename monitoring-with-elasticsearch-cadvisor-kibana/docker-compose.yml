@@ -1,16 +1,19 @@
 elasticsearch:
-  image: "elasticsearch:2.1.1"
-  name: elasticsearch
+  image: "elasticsearch:2.2.0"
+  container_name: elasticsearch
+  ports:
+    - "9200:9200"
+    - "9300:9300"
 kibana:
-  image: "kibana:4.3.1"
-  name: kibana
+  image: "kibana:4.4.0"
+  container_name: kibana
   ports:
     - "5601:5601"
   links:
     - elasticsearch
 cadvisor:
-  image: "google/cadvisor:0.19.3"
-  name: cadvisor
+  image: "google/cadvisor:v0.21.0"
+  container_name: cadvisor
   volumes:
     - "/:/rootfs:ro"
     - "/var/run:/var/run:rw"
@@ -20,4 +23,4 @@ cadvisor:
     - "8080:8080"
   links:
     - elasticsearch
-  command: -storage_driver=elasticsearch -storage_driver_es_host=elasticsearch:9200 -alsologtostderr=true
+  command: sleep 5;/usr/bin/cadvisor -storage_driver=elasticsearch -storage_driver_es_host="http://elasticsearch:9200" storage_driver_es_enable_sniffer=false -alsologtostderr=true
